@@ -29,15 +29,7 @@ tools { nodejs 'node18' }
       }
     }
 
-    stage('Install Dependencies') {
-      steps {
-        bat '''
-          echo === npm install ===
-          npm install
-        '''
-      }
-    }
-
+    
     // 1) SCA - Upload to Snyk UI
     stage('SCA Upload to Snyk UI (monitor)') {
       steps {
