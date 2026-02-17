@@ -32,8 +32,8 @@ tools { nodejs 'node18' }
     stage('Install Dependencies') {
       steps {
         bat '''
-          echo === npm ci ===
-          npm ci
+          echo === npm install ===
+          npm install
         '''
       }
     }
