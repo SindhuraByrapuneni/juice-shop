@@ -1,6 +1,8 @@
 pipeline {
   agent any
 
+tools { nodejs 'node18' }
+
   environment {
     // Jenkins injects this as env var for Snyk CLI
     SNYK_TOKEN = credentials('snyk-token')
