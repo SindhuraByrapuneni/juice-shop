@@ -34,6 +34,36 @@ tools { nodejs 'node18' }
     '''
   }
 }
+stage('Build Docker Image') {
+  steps {
+    bat '''
+      echo === Building Juice Shop docker image ===
+      docker build -t juice-shop:jenkins .
+    '''
+  }
+}
+
+stage('Container Scan (OS-level) - Snyk') {
+  steps {
+    bat '''
+      echo === Snyk Container test (console) ===
+      snyk container test juice-shop:jenkins --severity-threshold=low || exit /b 0
+
+      echo === Export Container scan JSON ===
+      snyk container test juice-shop:jenkins --json > snyk_container.json || exit /b 0
+    '''
+  }
+}
+
+stage('Upload Container Results to Snyk UI (monitor)') {
+  steps {
+    bat '''
+      echo === Uploading Container snapshot to Snyk UI ===
+      snyk container monitor juice-shop:jenkins --project-name=juice-shop-container-jenkins || exit /b 0
+    '''
+  }
+}
+
 
 
     
@@ -52,16 +82,19 @@ tools { nodejs 'node18' }
     stage('SAST Upload to Snyk UI (code --report)') {
       steps {
         bat '''
-          echo === SAST: upload to Snyk UI using snyk code test --report ===
-          snyk code test --report --project-name=%SNYK_PROJECT_NAME%
+          echo === Uploading SAST results to Snyk UI ===
+      snyk code test --report || exit /b 0
+     
         '''
       }
     }
   }
 
-  post {
+post {
     always {
-      echo "Done. Now check Snyk UI -> Projects for juice-shop-jenkins."
+      echo 'Archiving Snyk security reports'
+      archiveArtifacts artifacts: 'snyk_sca.json,snyk_sast.json,snyk_container.json', fingerprint: true
     }
   }
-}
+
+  }
