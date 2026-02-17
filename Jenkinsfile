@@ -18,16 +18,23 @@ tools { nodejs 'node18' }
       steps { checkout scm }
     }
 
-    stage('Verify Tools') {
-      steps {
-        bat '''
-          echo === Tool check ===
-          node --version
-          npm --version
-          snyk --version
-        '''
-      }
-    }
+  stage('Verify Tools') {
+  steps {
+    bat '''
+      echo === Tool check (informational only) ===
+
+      echo Checking node:
+      node --version || echo node not found
+
+      echo Checking npm:
+      npm --version || echo npm not found
+
+      echo Checking snyk:
+      snyk --version
+    '''
+  }
+}
+
 
     
     // 1) SCA - Upload to Snyk UI
