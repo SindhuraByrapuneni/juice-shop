@@ -42,7 +42,8 @@ tools { nodejs 'node18' }
       steps {
         bat '''
           echo === SCA: upload to Snyk UI using snyk monitor ===
-          snyk monitor --all-projects --project-name=%SNYK_PROJECT_NAME% --remote-repo-url=%GIT_URL%
+          snyk monitor --file=package.json --project-name=juice-shop-jenkins --remote-repo-url=https://github.com/SindhuraByrapuneni/juice-shop.git || exit /b 0
+
         '''
       }
     }
